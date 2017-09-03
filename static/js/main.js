@@ -329,8 +329,13 @@ $("#contact form").on("submit", function(event) {
 	event.preventDefault();
 	var $select = $("#contact form #contact_select");
 	var $text = $("#contact form #cd-textarea");
+	var $grade = $("#contact form #contact_grade")
 	if ($select.val() == 7) {
 		alert("è¯·é€‰æ‹©ç»„åˆ«");
+		return false;
+	}
+	if ($grade.val() == 7) {
+		alert("è¯·é€‰æ‹©å¹´çº§");
 		return false;
 	}
 	// console.log($text.val().length);
@@ -339,15 +344,22 @@ $("#contact form").on("submit", function(event) {
 		return false;
 	}
 
-	var _data = $(this).serialize();
-	console.log(_data);
+	var _data = $(this).serializeArray();
+	var _post = {}
+	for(var p in _data){
+		_post[_data[p].name] = _data[p].value
+		// console.log(_data[p].value)
+	}
+	_post['resume'] = 0
+	var json_data = JSON.stringify(_post)
+	console.log(json_data);
 
 
-	$.post('/info_pc', _data, function(data) {
-		if (data.status == true) {
+	$.post('/api/signup/submit', json_data, function(data) {
+		if (data.status == 'success') {
 			alert('æŠ¥åæˆåŠŸ');
 		} else {
-			alert('éªŒè¯ç é”™è¯¯');
+			alert('æŠ¥åå¤±è´¥');
 		};
 		var verify = document.getElementById('kaptcha');
 		verify.setAttribute('src', '/pil?' + Math.random());
@@ -490,9 +502,9 @@ Year.prototype = {
 			var gap = (tx - x) / 20;
 			var k = (ty - y) / (tx - x);
 			// console.log(k);
-			// »­Ö±ÏßµÄ¶¯»­
+			// ï¿½ï¿½Ö±ï¿½ßµÄ¶ï¿½ï¿½ï¿½
 			// console.log(me.getYearLabel.$label);
-			//Çå³ýtimer
+			//ï¿½ï¿½ï¿½timer
 			$label.mouseleave(function() {
 				/* Act on the event */
 				clearInterval(timer);
@@ -521,7 +533,7 @@ Year.prototype = {
 
 			}, 30);
 
-			//»­ÐéÏßÔ²»¡µÄ¶¯»­
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô²ï¿½ï¿½ï¿½Ä¶ï¿½ï¿½ï¿½
 			var pointArray = calcPointsCirc(tx - 2, ty - 2, me.circleR + 26, 1);
 			ctx.strokeStyle = "#7F7F7F";
 			ctx.beginPath();
@@ -532,7 +544,7 @@ Year.prototype = {
 
 			};
 			ctx.closePath();
-			//µÈ´ýÒÔºó »­ÊµÏßÔ²È¦µÄ¶¯»­
+			//ï¿½È´ï¿½ï¿½Ôºï¿½ ï¿½ï¿½Êµï¿½ï¿½Ô²È¦ï¿½Ä¶ï¿½ï¿½ï¿½
 			var timer2 = setTimeout(function() {
 				var m1 = 0;
 				var m2 = 0;
@@ -543,7 +555,7 @@ Year.prototype = {
 
 					if (m2 >= 2.2) {
 						m2 = 2.2;
-						//µ±»¡¶È´óÓÚÉè¶¨µÄ»¡¶ÈÇå³ý¶¨Ê±Æ÷
+						//ï¿½ï¿½ï¿½ï¿½ï¿½È´ï¿½ï¿½ï¿½ï¿½è¶¨ï¿½Ä»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½
 						clearInterval(timer3);
 						// drawCircle();
 					} else {
@@ -556,8 +568,8 @@ Year.prototype = {
 						m2 = m2 + 0.1;
 						// console.log(m2);
 					}
-					// context.clearRect(0, 0, canvas.width, canvas.height); //Ã¿´Î½øÐÐ»æÖÆÇ°£¬°ÑÖ®Ç°»æÖÆµÄÍ¼ÏñÉ¾³ýµô
-					// drawArc(context, m1, m2, canvas.width, canvas.height); //µ÷ÓÃ»æÖÆÔ²»·µÄ·½·¨
+					// context.clearRect(0, 0, canvas.width, canvas.height); //Ã¿ï¿½Î½ï¿½ï¿½Ð»ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½Ö®Ç°ï¿½ï¿½ï¿½Æµï¿½Í¼ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½
+					// drawArc(context, m1, m2, canvas.width, canvas.height); //ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½Ô²ï¿½ï¿½ï¿½Ä·ï¿½ï¿½ï¿½
 
 
 				}, 30);
