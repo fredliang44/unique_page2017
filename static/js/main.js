@@ -330,6 +330,9 @@ $("#contact form").on("submit", function(event) {
 	var $select = $("#contact form #contact_select");
 	var $text = $("#contact form #cd-textarea");
 	var $grade = $("#contact form #contact_grade")
+	var $file = $("#contact_file")[0]
+	var files = $file.files[0]
+
 	if ($select.val() == 7) {
 		alert("请选择组别");
 		return false;
@@ -344,16 +347,44 @@ $("#contact form").on("submit", function(event) {
 		return false;
 	}
 
+
 	var _data = $(this).serializeArray();
 	var _post = {}
 	for(var p in _data){
 		_post[_data[p].name] = _data[p].value
 		// console.log(_data[p].value)
 	}
-	_post['resume'] = 0
+	
+	if (files.length != 0) {
+		_post['resume'] = 1
+		var formData = new FormData()
+		formData.append('name', $('#contact_name').value)
+		formData.append('resume', files[0])
+		// let resp = await post('/api/signup/post', data)
+		// if (JSON.parse(resp)['status'] === 'success') {
+		// 	postJSON(1)
+		// }
+		$.ajax({
+			url: '/api/signup/post',
+			type: 'POST',
+			cache: false,
+			data: formData,
+			processData: false,
+			contentType: false
+		}).done(function (res) {
+			if (JSON.parse(res)['status'] === 'success') {
+				console.log('简历上传成功')
+			}
+		}).fail(function (res) {
+			console.log(res)
+		});
+	} else {
+		_post['resume'] = 0
+	}
+
+	// _post['resume'] = 0
 	var json_data = JSON.stringify(_post)
 	console.log(json_data);
-
 
 	$.post('/api/signup/submit', json_data, function(data) {
 		if (data.status == 'success') {
