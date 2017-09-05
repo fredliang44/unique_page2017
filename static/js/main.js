@@ -354,9 +354,8 @@ $("#contact form").on("submit", function(event) {
 		_post[_data[p].name] = _data[p].value
 		// console.log(_data[p].value)
 	}
-	
+
 	if (files.length != 0) {
-		_post['resume'] = 1
 		var formData = new FormData()
 		formData.append('name', $('#contact_name').value)
 		formData.append('resume', files[0])
@@ -373,6 +372,7 @@ $("#contact form").on("submit", function(event) {
 			contentType: false
 		}).done(function (res) {
 			if (JSON.parse(res)['status'] === 'success') {
+				_post['resume'] = 1
 				console.log('简历上传成功')
 			}
 		}).fail(function (res) {
