@@ -332,7 +332,7 @@ $("#contact form").on("submit", function(event) {
 	var $grade = $("#contact form #contact_grade")
 	var $file = $("#contact_file")[0]
 	var files = $file.files[0]
-
+console.log(files)
 	if ($select.val() == 7) {
 		alert("请选择组别");
 		return false;
@@ -355,49 +355,74 @@ $("#contact form").on("submit", function(event) {
 		// console.log(_data[p].value)
 	}
 
-	if (files.length != 0) {
+	_post["grade"] = parseInt(_post["grade"])
+
+	if (files != undefined) {
 		var formData = new FormData()
-		formData.append('name', $('#contact_name').value)
-		formData.append('resume', files[0])
+		console.log( $('#contact_name').val())
+		console.log(files)
+		formData.append('name', $('#contact_name').val())
+		formData.append('resume', files)
 		// let resp = await post('/api/signup/post', data)
 		// if (JSON.parse(resp)['status'] === 'success') {
 		// 	postJSON(1)
 		// }
+		console.log(formData)
 		$.ajax({
-			url: '/api/signup/post',
+			url: 'https://api.fredliang.cn/api/signup/post',
 			type: 'POST',
 			cache: false,
 			data: formData,
 			processData: false,
 			contentType: false
 		}).done(function (res) {
-			if (JSON.parse(res)['status'] === 'success') {
+			console.log(res)
+			if (res.status === 'success') {
 				_post['resume'] = 1
 				console.log('简历上传成功')
+				// _post['resume'] = 0
+				var json_data = JSON.stringify(_post)
+				console.log(json_data);
+
+				$.post('https://api.fredliang.cn/api/signup/submit', json_data, function (data) {
+					console.log(data)
+					if (data.status == 'success') {
+						alert('报名成功');
+					} else {
+						alert('报名失败');
+					};
+					// var verify = document.getElementById('kaptcha');
+					// verify.setAttribute('src', '/pil?' + Math.random());
+				}).fail(function () {
+					alert("服务器错误,报名失败");
+					return false;
+				});
 			}
 		}).fail(function (res) {
 			console.log(res)
+			alert('简历上传失败')
 		});
-	} else {
-		_post['resume'] = 0
-	}
-
-	// _post['resume'] = 0
-	var json_data = JSON.stringify(_post)
-	console.log(json_data);
-
-	$.post('/api/signup/submit', json_data, function(data) {
-		if (data.status == 'success') {
-			alert('报名成功');
 		} else {
-			alert('报名失败');
-		};
-		var verify = document.getElementById('kaptcha');
-		verify.setAttribute('src', '/pil?' + Math.random());
-	}).fail(function() {
-		alert("服务器错误,报名失败");
-		return false;
-	});
+			_post['resume'] = 0
+			// _post['resume'] = 0
+			var json_data = JSON.stringify(_post)
+			console.log(json_data);
+
+			$.post('https://api.fredliang.cn/api/signup/submit', json_data, function (data) {
+				console.log(data)
+				if (data.status == 'success') {
+					alert('报名成功');
+				} else {
+					alert('报名失败');
+				};
+				// var verify = document.getElementById('kaptcha');
+				// verify.setAttribute('src', '/pil?' + Math.random());
+			}).fail(function () {
+				alert("服务器错误,报名失败");
+				return false;
+			});
+		}
+
 });
 var verify = document.getElementById('kaptcha');
 var $verify = $('#kaptcha');
